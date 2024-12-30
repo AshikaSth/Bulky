@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
 using BulkyBook.Utility;
 using Microsoft.Extensions.Options;
+using Stripe;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,6 +16,11 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
+
+//stripe
+builder.Services.Configure<StripeSettings>(builder.Configuration.GetSection("Stripe"));
+
+//yeha pani mistake vayexa {applicationUser hunu parne}
 builder.Services.AddIdentity<IdentityUser, IdentityRole>().AddEntityFrameworkStores<ApplicationDbContext>().AddDefaultTokenProviders();
 
 builder.Services.ConfigureApplicationCookie(options =>
@@ -42,6 +48,8 @@ if (!app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
+StripeConfiguration.ApiKey =
+	builder.Configuration.GetSection("Stripe:SecretKey").Get<string>(); // This will get the stripe secret key from app setting
 
 app.UseRouting();
 app.UseAuthentication();

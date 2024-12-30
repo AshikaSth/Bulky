@@ -13,5 +13,20 @@ namespace BulkyBook.Utility
         public const string Role_Admin = "Admin";
         public const string Role_Employee = "Employee";
 
-    }
+        public const string StatusPending = "Pending";
+		public const string StatusApproved = "Approved";
+		public const string StatusInProcess = "Processing";
+		public const string StatusShipped = "Shipped";
+		public const string StatusCancelled = "Cancelled";
+		public const string StatusRefunded = "Refunded";
+
+
+		public const string PaymnentStatusPending = "Pending";
+		public const string PaymnentStatusApproved = "Approved";
+		public const string PaymnentStatusDelayPayment = "ApprovedForDelayPayment";
+		public const string PaymnentStatusRejected = "Rejected";
+
+
+
+	}
 }

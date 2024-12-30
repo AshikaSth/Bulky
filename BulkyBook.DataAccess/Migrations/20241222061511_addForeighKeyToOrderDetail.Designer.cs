@@ -4,6 +4,7 @@ using BulkyBook.DataAccess.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BulkyBook.DataAccess.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241222061511_addForeighKeyToOrderDetail")]
+    partial class addForeighKeyToOrderDetail
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -52,6 +55,38 @@ namespace BulkyBook.DataAccess.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Companies");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            City = "LA",
+                            Name = "Ashika Publishing",
+                            PhoneNumber = "11111",
+                            PostalCode = "446600",
+                            State = "California",
+                            StreetAddress = "123 Ashika St"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            City = "NY City",
+                            Name = "Penguin Publishers",
+                            PhoneNumber = "89844",
+                            PostalCode = "765433",
+                            State = "NY",
+                            StreetAddress = "67 Warsaw St"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            City = "Boston",
+                            Name = "Fire And Ice Publishers",
+                            PhoneNumber = "13689",
+                            PostalCode = "778899",
+                            State = "Masachussets",
+                            StreetAddress = "44 Tosh St"
+                        });
                 });
 
             modelBuilder.Entity("BulkyBook.Models.Models.Category", b =>
@@ -310,9 +345,6 @@ namespace BulkyBook.DataAccess.Migrations
 
                     b.Property<string>("PostalCode")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("SessionId")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("ShippingDate")
@@ -577,6 +609,9 @@ namespace BulkyBook.DataAccess.Migrations
                     b.Property<string>("City")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int?>("CompanyId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -589,6 +624,8 @@ namespace BulkyBook.DataAccess.Migrations
 
                     b.Property<string>("StreetAddress")
                         .HasColumnType("nvarchar(max)");
+
+                    b.HasIndex("CompanyId");
 
                     b.HasDiscriminator().HasValue("ApplicationUser");
                 });
@@ -702,6 +739,15 @@ namespace BulkyBook.DataAccess.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("BulkyBook.Models.ApplicationUser", b =>
+                {
+                    b.HasOne("BulkyBook.Models.Company", "Company")
+                        .WithMany()
+                        .HasForeignKey("CompanyId");
+
+                    b.Navigation("Company");
                 });
 #pragma warning restore 612, 618
         }

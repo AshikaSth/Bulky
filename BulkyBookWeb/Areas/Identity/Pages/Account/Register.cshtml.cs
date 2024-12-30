@@ -27,6 +27,7 @@ namespace BulkyBookWeb.Areas.Identity.Pages.Account
 {
     public class RegisterModel : PageModel
     {
+        //yeha application user vanera milau
         private readonly SignInManager<IdentityUser> _signInManager;
         private readonly RoleManager<IdentityRole> _roleManager;
 
