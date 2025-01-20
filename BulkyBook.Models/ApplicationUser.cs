@@ -19,6 +19,6 @@ namespace BulkyBook.Models
 
         public string? PostalCode { get; set; }
 
-
+        public int? CompanyId { get; set; }
     }
 }

@@ -1,9 +1,11 @@
-﻿using BulkyBook.DataAccess.Repository.IRepository;
+﻿using BulkyBook.DataAccess;
+using BulkyBook.DataAccess.Repository.IRepository;
 using BulkyBook.Models;
 using BulkyBook.Models.ViewModels;
 using BulkyBook.Utility;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.FeatureManagement;
 using Stripe.Checkout;
 using System.Security.Claims;
 
@@ -11,14 +13,18 @@ namespace BulkyBookWeb.Areas.Customer.Controllers
 {
     [Area("Customer")]
     [Authorize]
+    [ServiceFilter(typeof(FeatureFlagActionFilter))]
     public class CartController : Controller
+
     {
         private readonly IUnitOfWork _unitOfWork;
+        private readonly IFeatureManager _featureManager;
         [BindProperty]
         public ShoppingCartVM ShoppingCartVM { get; set; }
-        public CartController(IUnitOfWork unitOfWork)
+        public CartController(IUnitOfWork unitOfWork, IFeatureManager featureManager)
         {
             _unitOfWork = unitOfWork;
+            _featureManager = featureManager;
         }
         public IActionResult Index()
         {
@@ -35,6 +41,8 @@ namespace BulkyBookWeb.Areas.Customer.Controllers
                 cart.Price = GetPriceBasedOnQuantity(cart);
                 ShoppingCartVM.OrderHeader.OrderTotal += (cart.Price * cart.Count);
             }
+
+
             return View(ShoppingCartVM);
         }
 

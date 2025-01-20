@@ -46,11 +46,12 @@ namespace BulkyBook.Models.Models
         [Range(1, 2000)]
         public decimal Price100 { get; set; }
 
-        public int CategoryId {  get; set; }
+        [Display(Name = "Category")]
+        public int? CategoryId {  get; set; }
         [ForeignKey("CategoryId")]
 
 		[ValidateNever]
-		public Category Category { get; set; }
+		public Category? Category { get; set; }
 		[ValidateNever]
 		public string Imageurl { get; set; }
        

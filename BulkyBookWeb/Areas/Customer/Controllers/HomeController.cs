@@ -1,8 +1,13 @@
-﻿using BulkyBook.DataAccess.Repository.IRepository;
+﻿using BulkyBook.DataAccess.Repository;
+using BulkyBook.DataAccess.Repository.IRepository;
+using BulkyBook.Models;
 using BulkyBook.Models.Models;
 using BulkyBookWeb.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.FeatureManagement;
 using System.Diagnostics;
+using System.Security.Claims;
 
 namespace BulkyBookWeb.Areas.Customer.Controllers
 {
@@ -11,10 +16,13 @@ namespace BulkyBookWeb.Areas.Customer.Controllers
     {
         private readonly ILogger<HomeController> _logger;
         private readonly IUnitOfWork _unitOfWork;
-        public HomeController(ILogger<HomeController> logger, IUnitOfWork unitOfWork)
+        private readonly IFeatureFlagRepository _featureFlagRepository;
+
+        public HomeController(ILogger<HomeController> logger, IUnitOfWork unitOfWork, IFeatureFlagRepository featureFlagRepository)
         {
             _logger = logger;
             _unitOfWork= unitOfWork;
+            _featureFlagRepository = featureFlagRepository;
         }
 
         public IActionResult Index()
@@ -23,14 +31,25 @@ namespace BulkyBookWeb.Areas.Customer.Controllers
             return View(productList);
         }
 
-		public IActionResult Details(int? productId)
+		public  async Task<IActionResult> DetailsAsync(int productId)
 		{
             ShoppingCart cart = new()
             {
                 Product = _unitOfWork.Product.Get(u => u.Id == productId, includeProperties: "Category"),
-                Count=1,
+                Count = 1,
                 ProductId = productId
             };
+
+            //var product = _unitOfWork.Product.Get(u => u.Id == productId, includeProperties: "Category");
+            // Check if the "AddToCart" feature flag is enabled
+            bool isAddToCartEnabled = await _featureFlagRepository.GetFeatureFlagStatusAsync("AddToCart");
+
+			// Fetch the "IncludeCategory" feature flag status
+			bool isIncludeCategoryEnabled = await _featureFlagRepository.GetFeatureFlagStatusAsync("IncludeCategory");
+			
+            // Pass the feature flag status to the view
+			ViewBag.IsAddToCartEnabled = isAddToCartEnabled;
+			ViewBag.IsIncludeCategoryEnabled = isIncludeCategoryEnabled;
 			return View(cart);
 		}
         [HttpPost]
@@ -72,6 +91,11 @@ namespace BulkyBookWeb.Areas.Customer.Controllers
         public IActionResult Error()
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+        }
+		[AllowAnonymous]
+		public IActionResult FeatureDisabled()
+        {
+            return View();  // Show a view that indicates the feature is disabled
         }
     }
 }

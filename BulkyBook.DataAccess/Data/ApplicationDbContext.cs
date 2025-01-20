@@ -20,7 +20,7 @@ namespace BulkyBook.DataAccess.Data
         public DbSet<ApplicationUser> ApplicationUsers { get; set; }
         public DbSet<OrderHeader> OrderHeaders { get; set; }
         public DbSet<OrderDetail> OrderDetails { get; set; }
-
+        public DbSet<FeatureFlag> FeatureFlags { get; set; }
 
 
 
@@ -29,7 +29,11 @@ namespace BulkyBook.DataAccess.Data
         {
           
             base.OnModelCreating(modelBuilder);
-            modelBuilder.Entity<Product>()
+
+		
+		   
+
+			modelBuilder.Entity<Product>()
     .Property(p => p.ListPrice)
     .HasColumnType("decimal(18,2)");
 

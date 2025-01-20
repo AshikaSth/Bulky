@@ -1,4 +1,5 @@
-﻿using BulkyBook.DataAccess.Data;
+﻿using BulkyBook.DataAccess;
+using BulkyBook.DataAccess.Data;
 using BulkyBook.DataAccess.Repository.IRepository;
 using BulkyBook.Models.Models;
 using BulkyBook.Utility;
@@ -8,7 +9,8 @@ using Microsoft.AspNetCore.Mvc;
 namespace BulkyBookWeb.Areas.Admin.Controllers
 {
     [Area("Admin")]
-   // [Authorize(Roles = SD.Role_Admin)]
+    // [Authorize(Roles = SD.Role_Admin)]
+    [ServiceFilter(typeof(FeatureFlagActionFilter))]
     public class CategoryController : Controller
     {
         private readonly IUnitOfWork _unitOfWork;

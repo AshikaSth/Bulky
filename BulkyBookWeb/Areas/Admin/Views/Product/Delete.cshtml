@@ -1,4 +1,6 @@
-﻿
+﻿@inject Microsoft.FeatureManagement.IFeatureManager FeatureManager
+@using BulkyBook.DataAccess.Repository.IRepository
+@inject IFeatureFlagRepository FeatureFlagRepository
 
 
 @model BulkyBook.Models.Models.Product
